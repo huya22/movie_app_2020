@@ -46,7 +46,7 @@ const foodILike = [
     id:5,
     name: 'Kimbap',
     image: 'https://i.ytimg.com/vi/O-MoqCVb73g/maxresdefault.jpg',
-    rating: 4.6,
+    rating: 4.623,
   },
 ];
 
@@ -55,7 +55,7 @@ function App() {
   <div>
     {foodILike.map(dish => (
       <Food key={dish.id} name={dish.name} picture={dish.image} 
-        rating={dish.rating} />
+        rating={dish.rating.toFixed(2)}/>
     ))}
     {/*
     <h1>HEll o!!!!~!</h1>
