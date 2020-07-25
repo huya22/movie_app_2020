@@ -238,3 +238,247 @@
           아이디가 root인 엘리먼트는 index.html에 있음.
 
         ![Alt text](./Image/render.png)   
+
+        > 리액트는 ` <App />` 과 같은 표시를 컴포넌트로 인식하고, 그 컴포넌트가 반환하는 값을 화면에 그려줌.   
+        따라서 컴포넌트를 사용할 때 ` <App />` 이 아닌 ` App` 이라고 입력하면 오루가 발생함.   
+        **(중요!!: 리액트는 컴포넌트와 함께 동작하고, 리액트 앱은 모두 컴포넌트로 구성됨)**
+    
+    3. 두 번째 리액트 기초 개념: JSX
+        * 컴포넌트 = JSX(자바스크립트 + HTML 조합) 이라는 문법을 사용
+
+        1. Potato 컴포넌트 만들기
+            ```js
+            import React from 'react';
+            function Potato(){  //기본적인 Potato 컴포넌트 틀   
+                                //(항상 컴포넌트 이름은 대문자!)
+            }
+            ```     
+        > **주의!: 컴포넌트 이름은 항상 대문자 이어야 함!!!!!!**
+
+        2. 다음을 참고하여 Potato 컴포넌트가 JSX를 반환하도록 해보자
+             ```js
+            import React from 'react';
+            function Potato(){  //기본적인 Potato 컴포넌트 틀   
+                                //(항상 컴포넌트 이름은 대문자!)
+                return <h3> I love potato </h3>; //HTML이 아닌 JSX임
+            }
+            ```   
+        > **주의!: return 문에 있는 것은 HTML이 아닌 JSX!!**
+
+        3. 마지막 줄에 export default Potato; 추가
+            ```js
+            import React from 'react';
+            function Potato(){  //기본적인 Potato 컴포넌트 틀   
+                                //(항상 컴포넌트 이름은 대문자!)
+                return <h3> I love potato </h3>; //HTML이 아닌 JSX임
+             }
+
+            export default Potato;
+            ```   
+            > export default Potato;를 추가하면 다른 파일에서 Potato 컴포넌트를 사용 가능.
+
+        4. Potato 컴포넌트 사용하기
+            ```js
+            import React from 'react';
+            import ReactDOM from 'react-dom';
+            import App from './App';
+                
+            ReactDOM.render(<App /><Potato />, document.getElementById('root'));
+            ```   
+            > 위와 같이 수정 했을 경우에는 오류가 발생!!   
+              **오류: Adjacent JSX elements must be wrapped in an enclosing tag**   
+              **(인접한 JSX 요소는 반드시 하나의 태그로 감싸야 한다.)**   
+              리액트는 최종적으로 단 한개의 컴포넌트를 그려야 하는데 지금은 두개의 컴포넌트를 그리려고 해서 오류가 발생.   
+              **해결 방법: Potato 컴포넌트를 App 컴포넌트 안에 넣어야 한다.**
+        
+        5. App 컴포넌트에 Potato 컴포넌트 임포트하기
+            ```js
+            import React from 'react';
+            import Potato from './Potato';       // ./는 현재 파일이 있는 폴더를 말함
+                                                 // ../는 현재 파일의 상위 폴더를 말함
+            function App(){
+                return (
+                    <div>
+                        <h1>Hello</h1>
+                        <Potato />
+                    </div>
+                    );
+                }
+            export default App;
+            ```       
+            ![Alt text](./Image/potato.png)
+
+            > 크롬 개발자 도구를 실행하여 [Element] 탭을 열어 코드를 살펴보면 리액트가 `<Poatao />` 를 해석해서 `<h3> I love potato </h3>` 로 만든것을 확인 할 수 있음 
+            (-> 이것이 JSX가 리액트에서 동작하는 방식임    
+                    = 컴포넌트는 JSX로 만들고 JSX는 자바스크립트와 HTML을 조합한 문법)
+
+            6. App 컴포넌트 안에 Potato 컴포넌트 만들기
+                ```js
+                import React from 'react';
+                                                     
+                function Potato(){                        //Potato 컴포넌트를 만듬.
+                    return <h1> I like potato </h1>;
+                }
+
+                function App(){
+                    return (
+                        <div>
+                            <h1>Hello</h1>
+                            <Potato />                   //Potato 컴포넌트를 가져와서 사용
+                        </div>
+                    );
+                }
+                export default App;
+                ```  
+3. [세 번째 리액트 기초 개념: props](https://ko.reactjs.org/docs/components-and-props.html)
+    * props란? 
+        > 컴포넌트에서 컴포넌트로 전달하는 데이터를 말함.   
+          함수의 매개 변수와 같이 함수를 효율적으로 재사용할 수 있는 것과 같음.
+    
+    1. 컴포넌트 여러개 사용해보기 
+        ```js
+        import React from 'react';
+
+        function Movie(){                        //Movie 컴포넌트를 만듬. 정의할 때 이름과
+            return <h1> I like potato </h1>;
+        }
+
+        function App(){
+            return (
+                <div>
+                    <h1>Hello</h1>
+                    <Movie />                   //컴포넌트를 사용 할 때의 이름을 모두 바꿔야함.
+                </div>
+            );
+        }
+        export default App;
+        ```
+        > 여기서 영화 목록을 20개 만들고 싶다면? 
+          Movie 컴포넌트를 20개 복사하여 붙여 넣는 방법 (매우 비효율적이네;;)
+
+    * 이러한 문제를 해결하고자 props가 등장!
+
+    2. props로 컴포넌트에 데이터 전달하기
+        ```js
+        import React from 'react';
+
+        function Food(){                        
+            return <h1> I like potato </h1>;
+        }
+
+        function App(){
+            return (
+                <div>
+                    <h1>Hello</h1>
+                    <Food fav="kimchi" />       //fav는 favorite의 줄임말.
+                </div>
+            );
+        }
+        export default App;
+        ```
+        > Food 컴포넌트에 사용한 props의 이름은 fav이고, fav에 "kimchi"라는 값을 담아 Food 컴포넌트에 보냄.   
+          props에는 불리언 값(true, false), 숫자, 배열과 같은 다양한 형태의 데이터를 담을 수 있음.   
+          **주의!: props에 있는 데이터는 문자열인 경우를 제외하면 모두 중괄호({})로 감싸야함.**
+
+        ```js
+        (생략...)
+            <Food fav="kimchi" something={true} papapapa={['hello', 1, 2, 3, 4, true]} /> 
+        (생략...)
+        ```   
+        > 이런식으로 문자는 "" 나머지는 {}로 둘러싸여 있음.    
+          여기까지의 코드를 다시 실행 시켜보면 아직까지 아무런 변화가 없음.   
+        >    > Food 컴포넌트에 props 보내기만 했을 뿐 아직 사용하지 않았기 때문임.
+
+    3. props 사용하기
+        ```js
+        import React from 'react';
+
+        function Food(props){
+            console.log(props)                        
+            return <h1> I like potato </h1>;
+        }
+
+        function App(){
+            return (
+                <div>
+                    <h1>Hello</h1>
+                    <Food fav="kimchi"something={true} papapapa={['hello', 1, 2, 3, 4, true]} /> 
+                </div>
+            );
+        }
+        export default App;
+        ```
+        > 아직까지도 리액트 앱 화면에서는 아무런 변화가 없다.   
+        >    > console.log()함수는 개발자 도구의 [Console]탭에만 영향을 주기 때문.
+
+        ![ALT text](./Image/console.png)
+
+    4. props 다시 한 번 사용하기
+        ```js
+        import React from 'react';
+
+        function Food(props){              
+            return <h1> I like {props.fav} </h1>;
+        }
+
+        function App(){
+            return (
+                <div>
+                    <h1>Hello</h1>
+                    <Food fav="kimchi"/> 
+                </div>
+            );
+        }
+        export default App;
+        ```
+        ![ALT text](./Image/kimchi.png)
+        > 결과는 이렇게 나온다.   
+          **Food 컴포넌트에 props에 있는 데이너 "kimchi"를 화면에 출력하려면 props.fav를 중괄호로 감싸서 사용하면 됨.**
+
+    5. [구조 분해 할당](https://ko.javascript.info/destructuring-assignment)으로 props 사용하기
+        ```js
+        function Food(props){ 
+            {fav} = props;             
+            return <h1> I like {fav} </h1>;
+        }
+        ---------------------------------------------------
+       function Food({fav}){              
+            return <h1> I like {fav} </h1>;
+        }
+        ```
+        > 자바스크립트 ES6의 문법 중 구조 분해 할당(destructuring-assignment)을 사용하면 점 연산자를 사용하지 않아도 됨.   
+        위 두 문법 중 어느 방법이든 사용해도 된다. 
+
+    6. 여러개의 컴포넌트에 props 사용하기
+        ```js
+        import React from 'react';
+
+        function Food({fav}){              
+            return <h1> I like {fav} </h1>;
+        }
+
+        function App(){
+            return (
+                <div>
+                    <h1>Hello</h1>
+                    <Food fav="kimchi"/>
+                    <Food fav="ramen"/>
+                    <Food fav="samgiopsal"/>
+                    <Food fav="chukumi"/> 
+                </div>
+            );
+        }
+        export default App;
+        ```
+        ![ALT text](./Image/ramen.png)
+        > Food 컴포넌트를 4개 사용하여 각 컴포넌트에 전달한 fav props를 출력.   
+          각각의 fav props에는 서로 다른 값이 들어가 있어 같은 컴포넌트를 사용해도 서로 다른 문장이 출력됨.   
+          **이와 같은 상황을 컴포넌트를 재사용 했다고 부름.**
+
+    * 3장에서 배운 내용 요약
+    > **(1)** 컴포넌트가 무엇인지를 알아고보 JSX를 공부했다.   
+      **(2)** JSX는 단지 HTML과 자바스크립트를 조합한 문법이다.   
+      **(3)** JSX를 이용해서 컴포넌트를 작성했으며 컴포넌트의 이름은 **대문자**로 시작해야함.   
+      **(4)** 컴포넌트에 데이터를 전달할 때는 props를 사용하면 된다.   
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;컴포넌트에 props를 전달하면 props에 있는 데이터가 하나의 객체로 변환되어(함수)의 인자로 전달되고, &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;이걸 받아서 컴포넌트(함수)에 사용가능.    
+       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ES6의 구조 분해 할당을 사용하면 props를 좀 더 편리한 방법으로 사용 가능.
