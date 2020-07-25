@@ -61,48 +61,48 @@
                     웹 페이지이나 데스크탑 어플리케이션 처럼 동작하는 웹 페이지
 
 
-        2. npm 설치하기
-            * Node.js를 설치하면 노드 패키지 매니저(이하 npm)도 함께 설치 됨
-            ``` 
-            > npm -v 
-            6.13.4
-            ```   
-
-            * [npm(Node Packaged Manager) 이란?](https://m.blog.naver.com/magnking/220961896609)
-                * Node.js로 만들어진 모듈을 웹에서 받아서 설치하고 관리해주는 프로그램
-
-            * 패키지 매니저의 예시들
-                * Python: pip
-                * Java: jpm
-                * Javascript: npm
-
-        3. npx 설치하기
-            ``` 
-            > npm install npx -g
-            생략...
-            + npx@10.2.2
-            added 293 packages from 654 contributors in 11.548s
-            > npx -v
-            6.13.4
-            ``` 
-            * [npx란?](https://geonlee.tistory.com/32)
-                * 자바스크립트 패키지 관리 모듈인 npm(Node Package Module)의 npm@5.2.0 버전부터 새로 추가된 도구.  
-                * 따라서 npm@5.2.0 이상 버전만 깔려 있다면 npx 커맨드 사용 가능
-                * npm 레지스트리의 패키지 사용 경험을 파악하기 위한 도구 -npm은 레지스트리에서 호스팅 되는 종속성을 매우 쉽게 설치하고 관리할 수 있으며, npx는 레지스트리에서 호스팅되는 CLI(Command Line Interface) 도구 및 기타 실행 파일을 쉽게 사용할 수 있음. 
-                    * [CLI(Command Line Interface)란?](https://medium.com/@psychet_learn/cli-cli-%EA%B8%B0%EB%B3%B8-%EA%B0%9C%EB%85%90-%EB%B0%8F-%EC%82%AC%EC%9A%A9%EB%B2%95-c8d000ebc162)
-                        > 명령 줄 인터페이스또는 명령어 인터페이스 즉 텍스트 터미널을 통해 사용자와 컴퓨터가 상호 작용하는 방식을 말함.
-                * 지금까지 일반적인 npm과 관련하여 약간의 귀찮은 과정들이 필요했던 여러가지 사항을 크게 단순화함.
-
-        4. [VSCode 설치하기](https://code.visualstudio.com/)
-            * 편리한 작업 환경을 제공해줌.
-
-        5. git 설치하기
+    2. npm 설치하기
+        * Node.js를 설치하면 노드 패키지 매니저(이하 npm)도 함께 설치 됨
         ``` 
-        > git --version
-        git version 2.26.0.windows.1
+        > npm -v 
+        6.13.4
+        ```   
+
+        * [npm(Node Packaged Manager) 이란?](https://m.blog.naver.com/magnking/220961896609)
+            * Node.js로 만들어진 모듈을 웹에서 받아서 설치하고 관리해주는 프로그램
+
+        * 패키지 매니저의 예시들
+            * Python: pip
+            * Java: jpm
+            * Javascript: npm
+
+    3. npx 설치하기
         ``` 
-        * [git이란?](https://goddaehee.tistory.com/91)
-            * [git 한글 공식 메뉴얼](https://git-scm.com/book/ko/v2)
+        > npm install npx -g
+        생략...
+        + npx@10.2.2
+        added 293 packages from 654 contributors in 11.548s
+        > npx -v
+        6.13.4
+        ``` 
+        * [npx란?](https://geonlee.tistory.com/32)
+            * 자바스크립트 패키지 관리 모듈인 npm(Node Package Module)의 npm@5.2.0 버전부터 새로 추가된 도구.  
+            * 따라서 npm@5.2.0 이상 버전만 깔려 있다면 npx 커맨드 사용 가능
+            * npm 레지스트리의 패키지 사용 경험을 파악하기 위한 도구 -npm은 레지스트리에서 호스팅 되는 종속성을 매우 쉽게 설치하고 관리할 수 있으며, npx는 레지스트리에서 호스팅되는 CLI(Command Line Interface) 도구 및 기타 실행 파일을 쉽게 사용할 수 있음. 
+                * [CLI(Command Line Interface)란?](https://medium.com/@psychet_learn/cli-cli-%EA%B8%B0%EB%B3%B8-%EA%B0%9C%EB%85%90-%EB%B0%8F-%EC%82%AC%EC%9A%A9%EB%B2%95-c8d000ebc162)
+                > 명령 줄 인터페이스또는 명령어 인터페이스 즉 텍스트 터미널을 통해 사용자와 컴퓨터가 상호 작용하는 방식을 말함.
+            * 지금까지 일반적인 npm과 관련하여 약간의 귀찮은 과정들이 필요했던 여러가지 사항을 크게 단순화함.
+
+    4. [VSCode 설치하기](https://code.visualstudio.com/)
+        * 편리한 작업 환경을 제공해줌.
+
+    5. git 설치하기
+    ``` 
+    > git --version
+    git version 2.26.0.windows.1
+    ``` 
+    * [git이란?](https://goddaehee.tistory.com/91)
+        * [git 한글 공식 메뉴얼](https://git-scm.com/book/ko/v2)
 ---
 <a id = "Ch_02"></a>
 
@@ -197,4 +197,44 @@
 
     ---    
     
+<a id = "Ch_03"></a>
 
+## **Ch_03 - 리액트로 기초 개념 알아보기**
+1. 리액트 앱 실행 복습하기
+
+2. 첫 번째 리액트 기초 개념: 컴포넌트
+    1. App.js 파일로 컴포넌트의 정의 알아보기
+        * App.js 파일을 열고 App() 함수와 App() 함수가 반환하는 값을 보자
+
+        ```js
+        import React from 'react';
+
+        function App(){
+            return (
+                <div>
+                    <h1>Hello</h1>
+                </div>
+            );
+        }
+
+        export default App;
+        ```   
+        > App() 함수가 정의되어 있고, 이 함수가 `<div><h1>Hello</h1></div>`를 반환 함.   
+          이것이 바로 App 컴포넌트 정의.    
+          App() 함수가 반환한 HTML이 리액트 앱 화면에 그려지는 것임.
+        
+    2. index.js 파일로 컴포넌트의 사용 알아보기
+        ```js
+        import React from 'react';
+        import ReactDOM from 'react-dom';
+        import App from './App';                                  //App 컴포넌트를 임포트하여 사용
+
+        ReactDOM.render(<App />, document.getElementById('root')); //App 컴포넌트를 임포트하여 사용
+        ```   
+        > App 컴포넌트 생김새가 마치 HTML 태그 같으나 HTML에는 그러한 태그는 없음.       
+          <App />을 ReactDOM.render() 함수의 첫번째 인자로 전달하면 App 컴포넌트가 반환하는 것들을 화면에 그릴 수 있음.    
+          App 컴포넌트가 그려질 위치는 ReactDOM.render() 함수의 두 번째 인자로 전달하면 됨.   
+          함수를 그대로 해석해서 **'App 컴포넌트는 아이디가 root인 엘리먼트에 그려질 것이다.'** 정도로 이해하면 됨.  
+          아이디가 root인 엘리먼트는 index.html에 있음.
+
+        ![Alt text](./Image/render.png)   
