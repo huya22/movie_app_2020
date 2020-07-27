@@ -1,83 +1,47 @@
+//클래스형 컴포넌트를 사용하는 이유 = state를 사용하기 위해 
+
 import React from 'react';
-import propTypes from 'prop-types';
-/* import Potato from './Potato';
-
-function Chicken(){                    //컴포넌트, 컴포넌트 이름은 Chicken
-  return <h1> I like Chicken </h1>;
-}
-*/
-
-function Food({name, picture, rating}){                  //fav는 props? 아무튼 유용하게 사용될 수 있다.
-  return (
-  <div>
-    <h2>I like {name}</h2>
-    <h4>{rating} / 5.0</h4>
-    <img src={picture} alt={name}/>
-  </div>
-  );
-}
-
-const foodILike = [
-  {
-    id:1,
-    name: 'Chicken',
-    image: 'http://img.aws.livestrongcdn.com/ls-article-image-673/ds-photo/getty/article/223/112/491996285.jpg',
-    rating: 5.0,      /* 5.0은 5로 표현되네? */
-  },
-  {
-    id:2,
-    name: 'Samgyeopsal',
-    image: 'https://pds.joins.com/news/component/htmlphoto_mmdata/201702/27/117f5b49-1d09-4550-8ab7-87c0d82614de.jpg',
-    rating: 4.9,
-  },
-  {
-    id:3,
-    name: 'Bibimbap',
-    image: 'http://www.koreadailyus.com/wp-content/uploads/2016/01/vegetarian-bibimpbap.jpg',
-    rating: 4.8,
-  },
-  {
-    id:4,
-    name: 'Doncasu',
-    image: 'http://www.sky7food.or.kr/data/item/0000001305/thumb-7ZS87Lm07LiE_300x360.jpgㄴ',
-    rating: 4.7,
-  },
-  {
-    id:5,
-    name: 'Kimbap',
-    image: 'https://i.ytimg.com/vi/O-MoqCVb73g/maxresdefault.jpg',
-    rating: 4.623,
-  },
-];
-
-function App() {
-  return  (
-  <div>
-    {foodILike.map(dish => (
-      <Food key={dish.id} name={dish.name} picture={dish.image} 
-        rating={dish.rating.toFixed(2)}/>
-    ))}
-    {/*
-    <h1>HEll o!!!!~!</h1>
-    */}
-    {/*{foodILike.map(dish => (
-      <Food name={dish.name} picture={dish.image} />
-      ))}
-    */}
-    {/*
-    <Potato />  
-    <Chicken />  
-    <Food fav="Kimchi"/>             Food 컴포넌트 여기서는 주석도 이렇게만 만들 수 있다.
-    <Food fav="ramen" />             Food 컴포넌트
-    <Food fav="samgiopsal" />        Food 컴포넌트
-    <Food fav="Chukumi" />           Food 컴포넌트
-    */}
-    </div>
-  );
-}
-Food.propTypes ={
-  name: propTypes.string.isRequired,
-  picture: propTypes.string.isRequired,
-  rating:propTypes.number
-}
+class App extends React.Component{       
+                                         //실제로는 React.Component 클래스는 다음과 같이 500줄이 넘는 코드로 여러 기능이 구현 되어 있음.
+                                         //따라서 상속 받지 않으면 React.Component의 코드를 하나하나 다 쳐 넣어야 함.
+                                        
+  constructor(props){
+    super(props);
+    console.log('hello');
+  }
+  state = {                              //state는 객체 형태의 데이터
+    count: 0,
+  };
+  add = () => {
+    this.setState(current => ({
+      count: current.count + 1,
+    }));
+  }
+  minus = () => {
+    this.setState(current => ({
+      count: current.count - 1,
+    }));
+  }
+  componentDidMount(){
+    console.log('component rendered');
+  }
+  componentDidUpdate(){
+    console.log('I just updated');
+  }
+  componentWillUnmount(){
+    console.log('component rendered');
+  }
+  render(){                                //App 컴포넌트는 클래스(함수가 아님)라서 reuturn 문 사용 불가.
+                                           //클래스형 컴포넌트에서는 JSX를 반환하기 위해 render() 함수를 사용.
+    console.log("I'm rendering");
+    return (                               //함수형 컴포넌트는 return 문으로 JSX 반환.
+      <div>
+        <h1>The number is: {this.state.count} </h1>
+        <button onClick={this.add}>Add</button>
+        <button onClick={this.minus}>Minus</button>
+      </div>
+    );
+                                                       //클해스형 컴포넌트는 return() 함수로 JSX를 반환.
+  }
+}                                          
 export default App;

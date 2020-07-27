@@ -480,7 +480,7 @@
       **(2)** JSX는 단지 HTML과 자바스크립트를 조합한 문법이다.   
       **(3)** JSX를 이용해서 컴포넌트를 작성했으며 컴포넌트의 이름은 **대문자**로 시작해야함.   
       **(4)** 컴포넌트에 데이터를 전달할 때는 props를 사용하면 된다.   
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;컴포넌트에 props를 전달하면 props에 있는 데이터가 하나의 객체로 변환되어(함수)의 인자로 전달되고, &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;이걸 받아서 컴포넌트(함수)에 사용가능.    
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;컴포넌트에 props를 전달하면 props에 있는 데이터가 하나의 객체로 변환되어(함수)의 인자로 전달되고, 이걸 받아서 컴포넌트(함수)에 사용가능.    
        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ES6의 구조 분해 할당을 사용하면 props를 좀 더 편리한 방법으로 사용 가능.
 
 <a id = "Ch_04"></a>
