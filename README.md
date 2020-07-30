@@ -1120,9 +1120,175 @@
         ![Alt text](./Image/Ch05_setState-state.png)
     
     4. state의 변화에 따라 바뀌는 HTML 살펴보기
+        > 버튼을 번갈아 누르면 변경된 state의 값을 반영하려고 HTML만("1" 또는 "-1") 바뀔 것임.   
+        **=> 리액트의 장점!! 화면 구성이 빠르다(일반 웹의 경우 하나만 바뀌어도 전체가 다 바뀌는데 리액트는 필요한 부분만 바뀐다!!)** 
+
+    5. state를 업데이트 하는 방법에 대하여
+        ```js
+        import React from 'react';
+        class App extends React.Component{  
+            state = {
+                count: 0,
+            };
+            add = () => {
+                this.setState({count: this.state.count + 1});
+            };
+            minus = () => {
+                this.setState({count: this.state.count - 1});
+            };
+        (생략...)
+        ```    
+        ---
+        ```js
+        import React from 'react';
+        class App extends React.Component{  
+            state = {
+                count: 0,
+            };
+            add = () => {
+                this.setState(current => ({
+                    count: current.count +1,
+                }));
+            };
+            minus = () => {
+                this.setState(current => ({
+                    count: current.count - 1,
+                }));
+            };
+        (생략...)
+        ```  
+
+        >  위 두 코드의 결과는 같게 나온다.   
+        >  >**그러나!! 전자의 코드의 경우 "{count: this.state.count + 1}와 같이 코드를 작성하여 state를 업데이트 하는 방법은 좋지 않다. 성능문제가 발생할 수 있기 때문임.**
+        >
+        >  >**따라서 후자의 코드와 같이 current 인자를 받아 객체({count:current.count +1})를 반환하는 함수를 작성하여 setState() 함수에 전달하는 것이 더 낫다.**
+
+        ![Alt text](./Image/Ch05_setState-state-relation.png)
+
+        > **setState() 함수는 바뀐 state의 데이터만 업데이트 한다!**  
+          setState()의 인자로 state를 전달하면 구체적으로 어떤 일이 일어날까?
+        >   >**리액트는 이전 state와 새로운 state를 비교하여 바뀐 데이터만 업데이트 함.**   
+            **따라서 변경 대상이 아닌 키와 키값은 그대로 유지**
+        >
+        >   >**결국 state는 동적 데이터를 사용할 때 반드시 도입해야 할 요소다!!!**
+
+3. 클래스형 컴포넌트의 일생 알아보기
+    > 클래스형 컴포넌트를 사용하면 state와 render()함수와 같은 우리가 구현하지 않았거나 리액트가 미리 구현해 놓은 함수를 사용 가능하다. 
+    >   >이제 클래스형 컴포넌트의 일생을 만들어 주는 **생명 주기 함수**를 알아보자    
+         생명 주기 함수를 이용해서 영화 데이터를 가져와야 하므로 필요하다!
+
+    1. constructor() 함수 알아보기
+
+        ```js
+        import React from 'react';
+        class App extends React.Component{  
+            constructor(props){
+                super(props);
+                console.log('hello');
+            }
+            (생략...)
+            render(){
+                console.log('render');
+                return (
+                    <div>
+                        <h1> The number is: {this.state.count}</h1>
+                        <button onClick={this.add}>Add</button>
+                        <button onClick={this.minus}>Minus</button>
+                    </div>
+                );
+            }
+        }
+        export default App;
+        ```      
+        ![Alt text](./Image/Ch05_constructor.png)
         
+        >실행결과를 보면    
+        >   >**(1) constructor() 함수**
+        >   >   > constructor() 함수는 render() 함수보다 먼저 실행되지만 ReactComponent에 포함된 함수가 아닌 자바스크립트 함수다!   
+        >   
+        >   >**(2) render() 함수**   
+        >  
+        >순으로 실행이 되는 것을 확인 할 수 있다.
 
+    2. componentDidMount() 함수 알아보기
+        > **컴포넌트가 처음 화면에 그려지면 실행되는 함수 = DidMount로 분류**
+        ```js
+            (생략...)
+            componentDidMount(){
+                console.log('component rendered');
+            }
+            render(){
+                console.log("I'm render");
+                return (
+                    <div>
+                        <h1> The number is: {this.state.count}</h1>
+                        <button onClick={this.add}>Add</button>
+                        <button onClick={this.minus}>Minus</button>
+                    </div>
+                );
+            }
+        }
+        export default App;
+        ```    
+        ![Alt text](./Image/Ch05_componentDidMount.png)
 
+        >실행결과를 보면    
+        >   >**(1) constructor() 함수**   
+             **(2) render() 함수**   
+             **(3) componentDidMount() 함수**   
+        >
+        >순으로 실행이 되는 것을 확인 할 수 있다.
+    
+    3. componentDidUpdate() 함수 알아보기
+        > **컴포넌트가 업데이트 되었을 때 = 업데이트(Update)라고 분류한다.** 
+
+        ```js
+        class App extends React.Component{
+            (생략...)
+            componentDidMount(){
+                console.log('compnent rendered');
+            }
+        }
+        
+        componentDidUpdate(){
+            console.log('I just updated');
+        }
+        (생략...)
+        ```      
+        >화면에 업데이트되면 (새로 그려지면) 실행됨.
+        
+        ![Alt text](./Image/Ch05_componentDidUpdate.png)
+        
+        >실행결과를 보면
+        >   >**((1) setState() 함수 실행**
+        >   >   > (Add또는 Minus 버튼을 누르면 setState() 함수가 실행되고)  
+        >
+        >   >**(2) render 함수 실행**   
+        >   >   > (render() 함수가 다시 실행되니깐(화면이 업데이트 되니깐))  
+        > 
+        >   >**(3) componentDidUpdate() 함수 실행**   
+        >   >   > (componentDidUpdate() 함수가 실행됨)
+
+    4. componentWillUnmount() 함수 알아보기
+        > **컴포넌트가 죽을때 = 언마운트(Unmount)라고 분류한다.** 
+
+        ```js
+            (생략...)
+            componentDidMount(){
+                console.log('compnent rendered');
+            }
+        
+            componentDidUpdate(){
+                console.log('I just updated');
+            }
+            componentWillUnmount(){
+                console.log('Goodbye, cruel world');
+            }
+            (생략...)
+        ```    
+        > 이 함수의 경우에는 실행이 되지 않을 것이다. 
+        >   > 컴포넌트가 화면에서 떠나게 만드는 코드를 작성한적이 없기 때문임.
+        >   >   >**componentWillUnmount() 함수는 컴포넌트가 화면에서 떠날때 실행된다!!** 
 
 
         
