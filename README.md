@@ -1290,5 +1290,110 @@
         >   > 컴포넌트가 화면에서 떠나게 만드는 코드를 작성한적이 없기 때문임.
         >   >   >**componentWillUnmount() 함수는 컴포넌트가 화면에서 떠날때 실행된다!!** 
 
+4. 영화 앱 만들기 워밍업
+
+    1. 영화 데이터 로딩 상태 표시해 주기
+        > isLoading state를 추가해 보자. isLoading state는 컴포넌트가 마운트 되면 true여야 하니까(처음에 로딩 사태니깐) 다음과 같이 코드를 작성하면 됨.
+
+        ```js
+        import React from 'react';
+        class App extends react.Component{
+            state = {
+                isLoading: true,
+            };
+            render(){
+                const {isLoading} = this.state;   //구조 분해 할당으로 this.state에 있는 isLoading을 우선 얻으면 항상 this.state를 압력하지 않아도 됨.
+                return <div>{isLoading ? 'Loading...' : 'We are ready'}<div />;  //isLoading을 삼항 연산자에 사용
+            }
+        }
+        export default App;
+        ```    
+        ![Alt text](./Image/Ch05-Warming_Up_Loading.png)
+
+        > App 컴포넌트가 그려지면(render() 함수가 실행되면) 호출되는 생명주기 함수는
+        >   > componentDidMount() 함수이다!!
+
+    2. 로딩 현상 구현하기
+        > setTimeout() 함수를 적용하여 영화 데이터가 로딩되는 현상을 구현해보자!
+        >   > setTimeout() 함수란?
+        >   >   > 첫 번째 인자로 전달한 함수를 두 번째 인자로 전달한 값(밀리초) 후에 실행해주는 것
+
+        ```js
+        import React from 'react';
+        class App extends react.Component{
+            state = {
+                isLoading: true,
+            };
+            componentDidMount(){
+                setTimeout(() => {
+                    this.setState({isLoading: false});
+                }, 6000);
+            }
+            render(){
+                const {isLoading} = this.state;   
+                return <div>{isLoading ? 'Loading...' : 'We are ready'}<div />;  
+            }
+        }
+        export default App;
+        ```     
+        ![Alt text](./Image/Ch05-Warming_Up_Loading.png)
+        ![Alt text](./Image/Ch05-Warming_Up_We_are_ready.png)
+        
+        > componentDidMount() 함수는 영화 앱을 로딩하는 역할을 한다!
+        >   > 자바스크립트의 [fetch()](https://velog.io/@blackfunder7/fetch-%EB%9E%80-%EB%AC%B4%EC%97%87%EC%9D%B8%EA%B0%80-%EB%94%B0%EB%8B%A8) 함수
+        >   >   > api를 불러오고, 정보를 내주기도 하는 함수
+        > 
+        >   > 난이도가 있는 fetch() 함수를 대신할 수 있는 [Axios](https://velog.io/@rohkorea86/%EB%B9%84%EB%8F%99%EA%B8%B0-%EB%B9%84%EB%8F%99%EA%B8%B0%EC%97%90-%EB%8C%80%ED%95%B4%EC%84%9C-%EC%B0%A8%EA%B7%BC%EC%B0%A8%EA%B7%BC-%EB%8B%A4%EB%A3%A8%EB%A0%A4%EA%B3%A0-%ED%95%A9%EB%8B%88%EB%8B%A4)
+        >   >   > HTTP 클라이언트 라이브러리로써, 비동기 방식으로 HTTP 데이터 요청을 실행함.
+
+    3. 영화 데이터를 어디에 저장할까?
+        ```js
+        import React from 'react';
+        class App extends react.Component{
+            state = {
+                isLoading: true,
+            };
+            componentDidMount(){
+                // 영화 데이터 로딩
+                setTimeout(() => {
+                    this.setState({isLoading: false});
+                }, 6000);
+            }
+            render(){
+                const {isLoading} = this.state;   
+                return <div>{isLoading ? 'Loading...' : 'We are ready'}<div />;   
+                //We are ready에 영화 데이터를 출력
+            }
+        }
+        export default App;
+        ```         
+        > componentDidMount() 함수의 주석으로 된 부분에 영화 데이터를 로딩함 (//영화 데이터 로딩)
+        
+        > 로딩 된 데이터는 **state**에 저장하면됨.
+
+    4. 영화 데이터를 로딩한 다음 movie state에 저장하려면 배열로 movie state를 만들자
+        ```js
+        import React from 'react';
+        class App extends react.Component{
+            state = {
+                isLoading: true,
+                movies: [],     //배열로 만듬
+            };
+            componentDidMount(){
+                // 영화 데이터 로딩
+                setTimeout(() => {
+                    this.setState({isLoading: false});
+                }, 6000);
+            }
+            render(){
+                const {isLoading} = this.state;   
+                return <div>{isLoading ? 'Loading...' : 'We are ready'}<div />;   
+                //We are ready에 영화 데이터를 출력
+            }
+        }
+        export default App;
+        ```     
+        > state는 항상 미리 계획해서 생성하는 것이 가장 좋은 코딩 습관이다!
+          따라서 미리 데이터를 정의하는 습관을 들이자!!!!!
 
         
