@@ -919,6 +919,475 @@
           rating props가 필수적으로 있어야 함을 말함.    
           반면에 isRequired가 빠지면 없어도 상관 없음.   
           (영화 평점 앱을 만들때 아직 평점 등록이 안되어 있는 영화의 경우를 생각해보자!)
+---
+<a id = "Ch_05"></a>
+
+## **Ch_05 - state와 클래스형 컴포넌트**
+
+1. [state](https://velog.io/@hidaehyunlee/React-State-%EB%9E%80)로 숫자 증감 기능 만들어 보기
+    > state란? 
+    >  >state는 props 처럼 App 컴포넌트의 렌더링 결과물에 영향을 주는 데이터를 갖고 있는 객체.   
+    > 
+    >  >props는 (함수 매개 변수처럼) 컴포넌트에 전달되는 반면    
+      state는 (함수 내에 선언된 변수 처럼) 컴포넌트 안에서 관리됨.   
+    >
+    >  >props를 사용했는데도 state를 사용하는 이유는, 사용하는 쪽과 구현하는 쪽을 철저하게 분리시켜서 양쪽의 편의성을 각자 도모하기 위함임.
+
+    1. 이전까지의 컴포넌트들은 다 지워야 한다
+
+        ```js
+        import React from 'react';
+        class App extends React.Component{  //React.Component 클래스를 상속 받음
+        }
+        export default App;
+        ```   
+        > 상속이란?
+        >   > 상속은 '클래스에 다른 클래스의 기능을 추가할 수 있게' 해줌.
+        >
+        >   > 즉 위의 코드에서는 React.Component가 가지고 있는 기능을 상속 받았기 때문에 React.Component(실제로 500줄이 넘는 코드로 여러 기능이 구현되어 있음) 가 가지고 있는 기능에 대한 코드를 따로 입력 하지 않아도 가져와서 사용이 가능.
+
+        > 주의!!!   
+        >   > App 컴포넌트는 클래스이므로(함수가 아니므로) return 문 사용 불가!   
+        따라서 함수 형태의 App 컴포넌트처럼 JSX를 반환 할 수 없음.
+        >   
+        >   > 클래스 형 컴포넌트에서는 JSX를 반환하기 위해 render() 함수를 사용함! 
+
+    2. render() 함수를 사용해보면
+
+        ```js
+        import React from 'react';
+        class App extends React.Component{  //React.Component 클래스를 상속 받음
+            render(){
+                return <h1> I'm a class component </h1>
+            }
+        }
+        export default App;
+        ``` 
+        ![Alt text](./Image/component.png)
+
+        > **Key Point**  
+        >   > **함수형 컴포넌트 = return 문이 JSX를 반환**    
+              **클래스형 컴포넌트 = render() 함수가 JSX를 반환**
+        >   
+        >   > 리액트는 클래스형 컴포넌트의 render() 함수를 자동으로 실행 시켜줌.    
+              **즉 render() 함수는 직접 실행하지 않아도 실행되는 함수임.**
+        >    
+        >   > **클래스형 컴포넌트를 사용하는 이유는 = state를 사용하기 위해서이다!!!!**
+    
+    3. state 정의하기 
+        ```js
+        import React from 'react';
+        class App extends React.Component{  
+            state = {
+
+            };
+
+            render(){
+                return <h1> I'm a class component </h1>
+            }
+        }
+        export default App;
+        ``` 
+        > state는 객체 형태의 데이터   
+        >   > **state를 사용하기 위해서는 반드시 클래스형 컴포넌트 안에서 소문자를 이용하여 state라고 적어야 함!!**
+
+    4. state에 count값 추가하고 사용하기 
+        ```js
+        import React from 'react';
+        class App extends React.Component{  
+            state = {
+                count: 0,
+            };
+
+            render(){
+                return <h1> The number is: {this.state.count} </h1>
+            }
+        }
+        export default App;
+        ``` 
+        ![Alt text](./Image/Ch05_the_number_is.png)
+
+    5. 버튼을 눌러서 count state값 변경해보기
+        > `<Add>` 버튼과  `<Minus>` 버튼을 추가
+        
+        ```js
+        import React from 'react';
+        class App extends React.Component{  
+            state = {
+                count: 0,
+            };
+            add = () => {
+                console.log('add');
+            };
+            minus = () => {
+                console.log('minus');
+            };
+
+            render(){
+                return (
+                    <div>
+                        <h1>The number is: {this.state.count}</h1>
+                        <button onClick={this.add}>Add</button>              //버튼 생성
+                        <button onClick={this.minus}>Minus</button>            //버튼 생성
+                    </div>
+                );
+            }
+        }
+        export default App;
+        ``` 
+2. 숫자 증감 기능을 제대로 만들어 보기
+    > 리액트에서는 state를 특별하게 다루어야 함.   
+    >   > 따라서 JavaScript에서 처럼 this.state.count++와 같은 코드를 아직 작성하지 말라고 함!
+
+    1. this.state.count 마음대로 바꾸어 보기
+        ```js
+        import React from 'react';
+        class App extends React.Component{  
+            state = {
+                count: 0,
+            };
+            add = () => {
+                this.state.count = 1;
+            };
+            minus = () => {
+                this.state.count = -1;
+            };
+
+            render(){
+                return (
+                    <div>
+                        <h1>The number is: {this.state.count}</h1>
+                        <button onClick={this.add}>Add</button>              //버튼 생성
+                        <button onClick={this.minus}>Minus</button>            //버튼 생성
+                    </div>
+                );
+            }
+        }
+        export default App;
+        ```    
+        ![Alt text](./Image/Ch05_state_error.png)
+        > ***state를 직접 변경하지 말라***
+        >   > **리액트는 실제로 state를 직접 변경하는 코드를 허용하지 않음.**
+              **띠라서 add(), minus() 함수는 동작하지 않음.**
+        >
+        >   > **원래 리액트는 state가 변경되면 render()함수를 다시 실행하여 변경된 state를 화면에 출력함.**
+              **그런데 state를 직접 변경하는 경우에는 render() 함수를 다시 실행하지 않음.**
+
+    2. 경고 메세지 다시 살펴보기
+        ```    
+        Do not mutate state directly. Use setState()
+        ```    
+        > setState() 함수를 사용해서 state 값을 변경해야 함을 알 수 있다!
+
+    3. setState() 함수로 count state 변경하기
+        ```js
+        import React from 'react';
+        class App extends React.Component{  
+            state = {
+                count: 0,
+            };
+            add = () => {
+                this.setState = ({count: 1});
+            };
+            minus = () => {
+                this.setState = ({count: -1)};
+            };
+
+            render(){
+                return (
+                    <div>
+                        <h1>The number is: {this.state.count}</h1>
+                        <button onClick={this.add}>Add</button>              //버튼 생성
+                        <button onClick={this.minus}>Minus</button>            //버튼 생성
+                    </div>
+                );
+            }
+        }
+        export default App;
+        ```     
+        ![Alt text](./Image/Ch05_setState.png)
+
+        > 리액트가 setState() 함수의 호출을 감시하고 있기 때문에 가능한 일.   
+          setState() 함수가 동작하면 state가 새로운 값으로 바뀌고, 이어서 render() 함수를 동작시켜 화면을 업데이트함.
+
+        ![Alt text](./Image/Ch05_setState-state.png)
+    
+    4. state의 변화에 따라 바뀌는 HTML 살펴보기
+        > 버튼을 번갈아 누르면 변경된 state의 값을 반영하려고 HTML만("1" 또는 "-1") 바뀔 것임.   
+        **=> 리액트의 장점!! 화면 구성이 빠르다(일반 웹의 경우 하나만 바뀌어도 전체가 다 바뀌는데 리액트는 필요한 부분만 바뀐다!!)** 
+
+    5. state를 업데이트 하는 방법에 대하여
+        ```js
+        import React from 'react';
+        class App extends React.Component{  
+            state = {
+                count: 0,
+            };
+            add = () => {
+                this.setState({count: this.state.count + 1});
+            };
+            minus = () => {
+                this.setState({count: this.state.count - 1});
+            };
+        (생략...)
+        ```    
+        ---
+        ```js
+        import React from 'react';
+        class App extends React.Component{  
+            state = {
+                count: 0,
+            };
+            add = () => {
+                this.setState(current => ({
+                    count: current.count +1,
+                }));
+            };
+            minus = () => {
+                this.setState(current => ({
+                    count: current.count - 1,
+                }));
+            };
+        (생략...)
+        ```  
+
+        >  위 두 코드의 결과는 같게 나온다.   
+        >  >**그러나!! 전자의 코드의 경우 "{count: this.state.count + 1}와 같이 코드를 작성하여 state를 업데이트 하는 방법은 좋지 않다. 성능문제가 발생할 수 있기 때문임.**
+        >
+        >  >**따라서 후자의 코드와 같이 current 인자를 받아 객체({count:current.count +1})를 반환하는 함수를 작성하여 setState() 함수에 전달하는 것이 더 낫다.**
+
+        ![Alt text](./Image/Ch05_setState-state-relation.png)
+
+        > **setState() 함수는 바뀐 state의 데이터만 업데이트 한다!**  
+          setState()의 인자로 state를 전달하면 구체적으로 어떤 일이 일어날까?
+        >   >**리액트는 이전 state와 새로운 state를 비교하여 바뀐 데이터만 업데이트 함.**   
+            **따라서 변경 대상이 아닌 키와 키값은 그대로 유지**
+        >
+        >   >**결국 state는 동적 데이터를 사용할 때 반드시 도입해야 할 요소다!!!**
+
+3. 클래스형 컴포넌트의 일생 알아보기
+    > 클래스형 컴포넌트를 사용하면 state와 render()함수와 같은 우리가 구현하지 않았거나 리액트가 미리 구현해 놓은 함수를 사용 가능하다. 
+    >   >이제 클래스형 컴포넌트의 일생을 만들어 주는 **생명 주기 함수**를 알아보자    
+         생명 주기 함수를 이용해서 영화 데이터를 가져와야 하므로 필요하다!
+
+    1. constructor() 함수 알아보기
+
+        ```js
+        import React from 'react';
+        class App extends React.Component{  
+            constructor(props){
+                super(props);
+                console.log('hello');
+            }
+            (생략...)
+            render(){
+                console.log('render');
+                return (
+                    <div>
+                        <h1> The number is: {this.state.count}</h1>
+                        <button onClick={this.add}>Add</button>
+                        <button onClick={this.minus}>Minus</button>
+                    </div>
+                );
+            }
+        }
+        export default App;
+        ```      
+        ![Alt text](./Image/Ch05_constructor.png)
+        
+        >실행결과를 보면    
+        >   >**(1) constructor() 함수**
+        >   >   > constructor() 함수는 render() 함수보다 먼저 실행되지만 ReactComponent에 포함된 함수가 아닌 자바스크립트 함수다!   
+        >   
+        >   >**(2) render() 함수**   
+        >  
+        >순으로 실행이 되는 것을 확인 할 수 있다.
+
+    2. componentDidMount() 함수 알아보기
+        > **컴포넌트가 처음 화면에 그려지면 실행되는 함수 = DidMount로 분류**
+        ```js
+            (생략...)
+            componentDidMount(){
+                console.log('component rendered');
+            }
+            render(){
+                console.log("I'm render");
+                return (
+                    <div>
+                        <h1> The number is: {this.state.count}</h1>
+                        <button onClick={this.add}>Add</button>
+                        <button onClick={this.minus}>Minus</button>
+                    </div>
+                );
+            }
+        }
+        export default App;
+        ```    
+        ![Alt text](./Image/Ch05_componentDidMount.png)
+
+        >실행결과를 보면    
+        >   >**(1) constructor() 함수**   
+             **(2) render() 함수**   
+             **(3) componentDidMount() 함수**   
+        >
+        >순으로 실행이 되는 것을 확인 할 수 있다.
+    
+    3. componentDidUpdate() 함수 알아보기
+        > **컴포넌트가 업데이트 되었을 때 = 업데이트(Update)라고 분류한다.** 
+
+        ```js
+        class App extends React.Component{
+            (생략...)
+            componentDidMount(){
+                console.log('compnent rendered');
+            }
+        }
+        
+        componentDidUpdate(){
+            console.log('I just updated');
+        }
+        (생략...)
+        ```      
+        >화면에 업데이트되면 (새로 그려지면) 실행됨.
+        
+        ![Alt text](./Image/Ch05_componentDidUpdate.png)
+        
+        >실행결과를 보면
+        >   >**((1) setState() 함수 실행**
+        >   >   > (Add또는 Minus 버튼을 누르면 setState() 함수가 실행되고)  
+        >
+        >   >**(2) render 함수 실행**   
+        >   >   > (render() 함수가 다시 실행되니깐(화면이 업데이트 되니깐))  
+        > 
+        >   >**(3) componentDidUpdate() 함수 실행**   
+        >   >   > (componentDidUpdate() 함수가 실행됨)
+
+    4. componentWillUnmount() 함수 알아보기
+        > **컴포넌트가 죽을때 = 언마운트(Unmount)라고 분류한다.** 
+
+        ```js
+            (생략...)
+            componentDidMount(){
+                console.log('compnent rendered');
+            }
+        
+            componentDidUpdate(){
+                console.log('I just updated');
+            }
+            componentWillUnmount(){
+                console.log('Goodbye, cruel world');
+            }
+            (생략...)
+        ```    
+        > 이 함수의 경우에는 실행이 되지 않을 것이다. 
+        >   > 컴포넌트가 화면에서 떠나게 만드는 코드를 작성한적이 없기 때문임.
+        >   >   >**componentWillUnmount() 함수는 컴포넌트가 화면에서 떠날때 실행된다!!** 
+
+4. 영화 앱 만들기 워밍업
+
+    1. 영화 데이터 로딩 상태 표시해 주기
+        > isLoading state를 추가해 보자. isLoading state는 컴포넌트가 마운트 되면 true여야 하니까(처음에 로딩 사태니깐) 다음과 같이 코드를 작성하면 됨.
+
+        ```js
+        import React from 'react';
+        class App extends react.Component{
+            state = {
+                isLoading: true,
+            };
+            render(){
+                const {isLoading} = this.state;   //구조 분해 할당으로 this.state에 있는 isLoading을 우선 얻으면 항상 this.state를 압력하지 않아도 됨.
+                return <div>{isLoading ? 'Loading...' : 'We are ready'}<div />;  //isLoading을 삼항 연산자에 사용
+            }
+        }
+        export default App;
+        ```    
+        ![Alt text](./Image/Ch05-Warming_Up_Loading.png)
+
+        > App 컴포넌트가 그려지면(render() 함수가 실행되면) 호출되는 생명주기 함수는
+        >   > componentDidMount() 함수이다!!
+
+    2. 로딩 현상 구현하기
+        > setTimeout() 함수를 적용하여 영화 데이터가 로딩되는 현상을 구현해보자!
+        >   > setTimeout() 함수란?
+        >   >   > 첫 번째 인자로 전달한 함수를 두 번째 인자로 전달한 값(밀리초) 후에 실행해주는 것
+
+        ```js
+        import React from 'react';
+        class App extends react.Component{
+            state = {
+                isLoading: true,
+            };
+            componentDidMount(){
+                setTimeout(() => {
+                    this.setState({isLoading: false});
+                }, 6000);
+            }
+            render(){
+                const {isLoading} = this.state;   
+                return <div>{isLoading ? 'Loading...' : 'We are ready'}<div />;  
+            }
+        }
+        export default App;
+        ```     
+        ![Alt text](./Image/Ch05-Warming_Up_Loading.png)
+        ![Alt text](./Image/Ch05-Warming_Up_We_are_ready.png)
+        
+        > componentDidMount() 함수는 영화 앱을 로딩하는 역할을 한다!
+        >   > 자바스크립트의 [fetch()](https://velog.io/@blackfunder7/fetch-%EB%9E%80-%EB%AC%B4%EC%97%87%EC%9D%B8%EA%B0%80-%EB%94%B0%EB%8B%A8) 함수
+        >   >   > api를 불러오고, 정보를 내주기도 하는 함수
+        > 
+        >   > 난이도가 있는 fetch() 함수를 대신할 수 있는 [Axios](https://velog.io/@rohkorea86/%EB%B9%84%EB%8F%99%EA%B8%B0-%EB%B9%84%EB%8F%99%EA%B8%B0%EC%97%90-%EB%8C%80%ED%95%B4%EC%84%9C-%EC%B0%A8%EA%B7%BC%EC%B0%A8%EA%B7%BC-%EB%8B%A4%EB%A3%A8%EB%A0%A4%EA%B3%A0-%ED%95%A9%EB%8B%88%EB%8B%A4)
+        >   >   > HTTP 클라이언트 라이브러리로써, 비동기 방식으로 HTTP 데이터 요청을 실행함.
+
+    3. 영화 데이터를 어디에 저장할까?
+        ```js
+        import React from 'react';
+        class App extends react.Component{
+            state = {
+                isLoading: true,
+            };
+            componentDidMount(){
+                // 영화 데이터 로딩
+                setTimeout(() => {
+                    this.setState({isLoading: false});
+                }, 6000);
+            }
+            render(){
+                const {isLoading} = this.state;   
+                return <div>{isLoading ? 'Loading...' : 'We are ready'}<div />;   
+                //We are ready에 영화 데이터를 출력
+            }
+        }
+        export default App;
+        ```         
+        > componentDidMount() 함수의 주석으로 된 부분에 영화 데이터를 로딩함 (//영화 데이터 로딩)
+        
+        > 로딩 된 데이터는 **state**에 저장하면됨.
+
+    4. 영화 데이터를 로딩한 다음 movie state에 저장하려면 배열로 movie state를 만들자
+        ```js
+        import React from 'react';
+        class App extends react.Component{
+            state = {
+                isLoading: true,
+                movies: [],     //배열로 만듬
+            };
+            componentDidMount(){
+                // 영화 데이터 로딩
+                setTimeout(() => {
+                    this.setState({isLoading: false});
+                }, 6000);
+            }
+            render(){
+                const {isLoading} = this.state;   
+                return <div>{isLoading ? 'Loading...' : 'We are ready'}<div />;   
+                //We are ready에 영화 데이터를 출력
+            }
+        }
+        export default App;
+        ```     
+        > state는 항상 미리 계획해서 생성하는 것이 가장 좋은 코딩 습관이다!   
+          따라서 미리 데이터를 정의하는 습관을 들이자!!!!!
 
 
 
