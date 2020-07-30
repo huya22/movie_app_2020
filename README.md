@@ -26,6 +26,12 @@
     * 04-2 map() 함수로 컴포넌트 많이 만들기
     * 04-3 음식 앱 이리저리 만지고, 고쳐보기
     * 04-4 음식 앱에 prop-types 도입하기
+
+* [Ch_05 - state와 클래스형 컴포넌트](#Ch_05)
+    * 05-1 state로 숫자 증감 기능 만들어 보기
+    * 05-2 숫자 증감 기능을 제대로 만들어 보기
+    * 05-3 클래스형 컴포넌트의 일생 알아보기
+    * 05-4 영화 앱 만들기 워밍업
 ---
 <a id = "Ch_01"></a>
 
@@ -920,5 +926,203 @@
           반면에 isRequired가 빠지면 없어도 상관 없음.   
           (영화 평점 앱을 만들때 아직 평점 등록이 안되어 있는 영화의 경우를 생각해보자!)
 
+---
+<a id = "Ch_05"></a>
+
+## **Ch_05 - state와 클래스형 컴포넌트**
+
+1. [state](https://velog.io/@hidaehyunlee/React-State-%EB%9E%80)로 숫자 증감 기능 만들어 보기
+    > state란? 
+    >  >state는 props 처럼 App 컴포넌트의 렌더링 결과물에 영향을 주는 데이터를 갖고 있는 객체.   
+    > 
+    >  >props는 (함수 매개 변수처럼) 컴포넌트에 전달되는 반면    
+      state는 (함수 내에 선언된 변수 처럼) 컴포넌트 안에서 관리됨.   
+    >
+    >  >props를 사용했는데도 state를 사용하는 이유는, 사용하는 쪽과 구현하는 쪽을 철저하게 분리시켜서 양쪽의 편의성을 각자 도모하기 위함임.
+
+    1. 이전까지의 컴포넌트들은 다 지워야 한다
+
+        ```js
+        import React from 'react';
+        class App extends React.Component{  //React.Component 클래스를 상속 받음
+        }
+        export default App;
+        ```   
+        > 상속이란?
+        >   > 상속은 '클래스에 다른 클래스의 기능을 추가할 수 있게' 해줌.
+        >
+        >   > 즉 위의 코드에서는 React.Component가 가지고 있는 기능을 상속 받았기 때문에 React.Component(실제로 500줄이 넘는 코드로 여러 기능이 구현되어 있음) 가 가지고 있는 기능에 대한 코드를 따로 입력 하지 않아도 가져와서 사용이 가능.
+
+        > 주의!!!   
+        >   > App 컴포넌트는 클래스이므로(함수가 아니므로) return 문 사용 불가!   
+        따라서 함수 형태의 App 컴포넌트처럼 JSX를 반환 할 수 없음.
+        >   
+        >   > 클래스 형 컴포넌트에서는 JSX를 반환하기 위해 render() 함수를 사용함! 
+
+    2. render() 함수를 사용해보면
+
+        ```js
+        import React from 'react';
+        class App extends React.Component{  //React.Component 클래스를 상속 받음
+            render(){
+                return <h1> I'm a class component </h1>
+            }
+        }
+        export default App;
+        ``` 
+        ![Alt text](./Image/component.png)
+
+        > **Key Point**  
+        >   > **함수형 컴포넌트 = return 문이 JSX를 반환**    
+              **클래스형 컴포넌트 = render() 함수가 JSX를 반환**
+        >   
+        >   > 리액트는 클래스형 컴포넌트의 render() 함수를 자동으로 실행 시켜줌.    
+              **즉 render() 함수는 직접 실행하지 않아도 실행되는 함수임.**
+        >    
+        >   > **클래스형 컴포넌트를 사용하는 이유는 = state를 사용하기 위해서이다!!!!**
+    
+    3. state 정의하기 
+        ```js
+        import React from 'react';
+        class App extends React.Component{  
+            state = {
+
+            };
+
+            render(){
+                return <h1> I'm a class component </h1>
+            }
+        }
+        export default App;
+        ``` 
+        > state는 객체 형태의 데이터   
+        >   > **state를 사용하기 위해서는 반드시 클래스형 컴포넌트 안에서 소문자를 이용하여 state라고 적어야 함!!**
+
+    4. state에 count값 추가하고 사용하기 
+        ```js
+        import React from 'react';
+        class App extends React.Component{  
+            state = {
+                count: 0,
+            };
+
+            render(){
+                return <h1> The number is: {this.state.count} </h1>
+            }
+        }
+        export default App;
+        ``` 
+        ![Alt text](./Image/Ch05_the_number_is.png)
+
+    5. 버튼을 눌러서 count state값 변경해보기
+        > `<Add>` 버튼과  `<Minus>` 버튼을 추가
+        
+        ```js
+        import React from 'react';
+        class App extends React.Component{  
+            state = {
+                count: 0,
+            };
+            add = () => {
+                console.log('add');
+            };
+            minus = () => {
+                console.log('minus');
+            };
+
+            render(){
+                return (
+                    <div>
+                        <h1>The number is: {this.state.count}</h1>
+                        <button onClick={this.add}>Add</button>              //버튼 생성
+                        <button onClick={this.minus}>Minus</button>            //버튼 생성
+                    </div>
+                );
+            }
+        }
+        export default App;
+        ``` 
+2. 숫자 증감 기능을 제대로 만들어 보기
+    > 리액트에서는 state를 특별하게 다루어야 함.   
+    >   > 따라서 JavaScript에서 처럼 this.state.count++와 같은 코드를 아직 작성하지 말라고 함!
+
+    1. this.state.count 마음대로 바꾸어 보기
+        ```js
+        import React from 'react';
+        class App extends React.Component{  
+            state = {
+                count: 0,
+            };
+            add = () => {
+                this.state.count = 1;
+            };
+            minus = () => {
+                this.state.count = -1;
+            };
+
+            render(){
+                return (
+                    <div>
+                        <h1>The number is: {this.state.count}</h1>
+                        <button onClick={this.add}>Add</button>              //버튼 생성
+                        <button onClick={this.minus}>Minus</button>            //버튼 생성
+                    </div>
+                );
+            }
+        }
+        export default App;
+        ```    
+        ![Alt text](./Image/Ch05_state_error.png)
+        > ***state를 직접 변경하지 말라***
+        >   > **리액트는 실제로 state를 직접 변경하는 코드를 허용하지 않음.**
+              **띠라서 add(), minus() 함수는 동작하지 않음.**
+        >
+        >   > **원래 리액트는 state가 변경되면 render()함수를 다시 실행하여 변경된 state를 화면에 출력함.**
+              **그런데 state를 직접 변경하는 경우에는 render() 함수를 다시 실행하지 않음.**
+
+    2. 경고 메세지 다시 살펴보기
+        ```    
+        Do not mutate state directly. Use setState()
+        ```    
+        > setState() 함수를 사용해서 state 값을 변경해야 함을 알 수 있다!
+
+    3. setState() 함수로 count state 변경하기
+        ```js
+        import React from 'react';
+        class App extends React.Component{  
+            state = {
+                count: 0,
+            };
+            add = () => {
+                this.setState = ({count: 1});
+            };
+            minus = () => {
+                this.setState = ({count: -1)};
+            };
+
+            render(){
+                return (
+                    <div>
+                        <h1>The number is: {this.state.count}</h1>
+                        <button onClick={this.add}>Add</button>              //버튼 생성
+                        <button onClick={this.minus}>Minus</button>            //버튼 생성
+                    </div>
+                );
+            }
+        }
+        export default App;
+        ```     
+        ![Alt text](./Image/Ch05_setState.png)
+
+        > 리액트가 setState() 함수의 호출을 감시하고 있기 때문에 가능한 일.   
+          setState() 함수가 동작하면 state가 새로운 값으로 바뀌고, 이어서 render() 함수를 동작시켜 화면을 업데이트함.
+
+        ![Alt text](./Image/Ch05_setState-state.png)
+    
+    4. state의 변화에 따라 바뀌는 HTML 살펴보기
+        
 
 
+
+
+        
