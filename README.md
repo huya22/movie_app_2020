@@ -32,6 +32,12 @@
     * 05-2 숫자 증감 기능을 제대로 만들어 보기
     * 05-3 클래스형 컴포넌트의 일생 알아보기
     * 05-4 영화 앱 만들기 워밍업
+
+* [Ch_06 - 영화 앱 만들기](#Ch_06)
+    * 06-1 영화 API 사용해 보기
+    * 06-2 영화 데이터 화면에 그리기
+    * 06-3 Movie 컴포넌트 만들기
+    * 06-4 영화 앱 스타일링 하기 - 기초
 ---
 <a id = "Ch_01"></a>
 
@@ -1395,5 +1401,661 @@
         ```     
         > state는 항상 미리 계획해서 생성하는 것이 가장 좋은 코딩 습관이다!   
           따라서 미리 데이터를 정의하는 습관을 들이자!!!!!
+
+---
+
+<a id = "Ch_06"></a>
+
+## **Ch_06 - 영화 앱 만들기**
+
+1. 영화 API 사용해 보기
+    1. axios 설치하기
+        > axios란?
+        >   > axios는 HTTP 클라이언트 라이브러리로써, 비동기 방식으로 HTTP 데이터 요청을 실행함.   
+        내부적으로 axios는 직접적으로 XMLHttpRequest를 다루지 않고 "AJAX 호출"을 할 수 있음.   
+        >
+        >   > **즉 axios를 사용하면 XMLHttpRequest 없이 AJAX를 호출 할 수 있어서 이득이라는 뜻인 것 같다!**
+    
+        > 그렇다면 AJAX란?
+        >   > AJAX는 **JavaScript의 라이브러리 중 하나**이며 Asynchronous Javascript And Xml (비동기식 자바스크립트와 xml)의 약자이다.   
+        **브라우저가 가지고 있는 XMLHttpRequest 객체를 이용해서 전체 페이지를 새로 고치지 않고도 페이지의 일부만을 위해 데이터를 로드하는 기법이다.** 
+        >  
+        >   >**즉 JavaScript를 사용한 비동기 통신, 클라이언트와 서버간에 XML 데이터를 주고 받는 기술이라고 할 수 있다!**
+    
+        ```
+        > npm install axios
+        ```
+
+        > 터미널에 위의 명령어를 입력해 axios 설치가 가능.
+
+    2. JSON Viewer 확장 도구 설치하기
+        > .json 파일 즉 자바스크립트의 객체와 비슷한 데이터들을 줄바꿈을 자동으로 해주어 보기 쉽게 해주는 도구.
+
+    3. 노마드 코더 영화 API를 영화 앱에서 호출하기
+        ```js
+        import React from 'react';
+        import axios from 'axios';
+
+        class App extends React.Component {
+            state = {
+                isLoading: true,
+                movies : [],
+            };
+            componentDidMount(){
+                axios.get('https://yts-proxy.now.sh/list_movie.json');
+            }   
+            render() {
+                const {isLoading} = this.state;
+                return <div> {isLoading ? 'Loading...' : 'We are ready'}</div>
+            }
+        }
+        export default App;
+        ```
+        ![Alt text](./Image/Ch06_axios_state_error.png)
+
+        > 개발자 도구의 Network 탭의 내용 중 Name이라는 항목에 list_movie.json이라고 나온 부분은 axios가 API를 호출하고 있기 때문에 생긴 것.
+
+        > 즉 axios를 활용한 API 호출에 성공했다는 것을 의미함.
+
+        > 주의!!
+        >   > axios는 네트워크를 사용하므로 느리게 동작한다. 따라서 axios get()이 반환한 영화 데이터를 잡으려면 자바스크립트에 axios.get()을 포함하고 있는 함수의 실행이 끝날 때까지 시간이 걸릴 수 있다고 말을 해야함.
+
+    4. getMovies() 함수 기다린 다음, axios.get() 함수가 반환한 데이터 잡기
+
+        ```js
+        import React from 'react';
+        import axios from 'axios';
+
+        class App extends React.Component {
+            state = {
+                isLoading: true,
+                movies : [],
+            };
+            getMovies = () => {
+                const movies = axios.get('https://yts-proxy.now.sh/list_movie.json');
+            }
+            componentDidMount(){
+                this.getMovies();
+            }
+            render() {
+                const {isLoading} = this.state;
+                return <div> {isLoading ? 'Loading...' : 'We are ready'}</div>
+            }
+        }
+        export default App;
+        ```
+        > 이제 componentDidMount()함수가 실행되면 this.getMovies()가 실행 됨.    
+
+        >**이때 자바스크립트에게 getMovies() 함수는 시간이 필요하다고 말해야만 axios.get()이 반환한 데이터를 제대로 잡을 수 있다.**
+        >   > 이때 async와 aswait가 필요하다!!
+
+    5. getMovies()에 async 붙이고 axios.get()에 await 붙이기
+        >  자바스크립트에게 getMovies() 함수는 시간이 필요해라고 말하기 위해서는 async를 () 앞에 붙이고 실제 시간이 필요한 대상인 axios.get() 앞에 await를 붙여야 함. 
+
+        > 여기서 [async와 await 란 무엇인가?](https://ko.javascript.info/async-await)
+        >   > [프라미스는 또 무엇인가?](https://ko.javascript.info/promise-basics)
+
+        ```js
+        import React from 'react';
+        import axios from 'axios';
+
+        class App extends React.Component {
+            state = {
+                isLoading: true,
+                movies : [],
+            };
+            getMovies = async () => {    //자바스크립트에게 getMovies() 함수는 시간이 필요하고 
+                const movies = await axios.get('https://yts-proxy.now.sh/list_movie.json'); // await는 axios.get()의 실행을 기다려 달라고 말하는 의미 
+            }
+            componentDidMount(){
+                this.getMovies();
+            }
+            render() {
+                const {isLoading} = this.state;
+                return <div> {isLoading ? 'Loading...' : 'We are ready'}</div>
+            }
+        }
+        export default App;
+        ```
+        > async라는 키워드는 자바스크립트에게 getMovies() 함수가 비동기라고 말해주는 것.   
+        즉 자바스크립트에게 getMovies() 함수는 비동기라서 기다려야 해라고 말한 것이라고 생각하면 됨.
+
+        > await라는 키워드는 자바스크립트에게 getMovies() 함수 내부의 axios.get()의 실행 완료를 기다렸다가 끝나면 계속 진행해라고 말한 것.
+
+2. 영화 데이터 화면에 그리기
+
+    1. console.log() 함수로 영화 데이터 출력해보기
+        ```js
+        import React from 'react';
+        import axios from 'axios';
+
+        class App extends React.Component {
+            state = {
+                isLoading: true,
+                movies : [],
+            };
+            getMovies = async () => {    //자바스크립트에게 getMovies() 함수는 시간이 필요하고 
+                const movies = await axios.get('https://yts-proxy.now.sh/list_movie.json'); // await는 axios.get()의 실행을 기다려 달라고 말하는 의미 
+                console.log(movies);
+            }
+            componentDidMount(){
+                this.getMovies();
+            }
+            render() {
+                const {isLoading} = this.state;
+                return <div> {isLoading ? 'Loading...' : 'We are ready'}</div>
+            }
+        }
+        export default App;
+        ```
+        ![Alt text](./Image/Ch06_console.log(movies).png)
+
+        > **data -> data -> movies 순서대로 객체에 접근하면 원하는 데이터를 추출할 수 있음!!**
+
+    2. 객체에 있는 movies 키에 접근하기
+
+        ```js
+        import React from 'react';
+        import axios from 'axios';
+
+        class App extends React.Component {
+            state = {
+                isLoading: true,
+                movies : [],
+            };
+            getMovies = async () => {   
+                const movies = await axios.get('https://yts-proxy.now.sh/list_movie.json'); 
+                console.log(movies.data.data.movies); //점 연산자로 객체에 접근
+            }
+            componentDidMount(){
+                this.getMovies();
+            }
+            render() {
+                const {isLoading} = this.state;
+                return <div> {isLoading ? 'Loading...' : 'We are ready'}</div>
+            }
+        }
+        export default App;
+        ```
+        > 진짜 원하는 영화 데이터만 추출하게 된 것 
+        >   > movies 변수에는 배열이 들어 가 있고 배열에는 객체가 20개 들어 있다!
+
+    3. 객체에 있는 movies 키에 조금 더 똑똑하게 접근하기
+
+        > movies.data.data.movies 와 같은 방법으로 객체에 접근하는 방식은 고급스럽지 못하다. 
+
+        > 따라서 아래와 같은 방법을 추천한다고 한다.
+
+        ```js
+        import React from 'react';
+        import axios from 'axios';
+
+        class App extends React.Component {
+            state = {
+                isLoading: true,
+                movies : [],
+            };
+            getMovies = async () => {  
+                const {
+                    data : {
+                        data : {movies},
+                    },
+                } = await axios.get('https://yts-proxy.now.sh/list_movies.json');
+                console.log(movies);
+            };
+            componentDidMount(){
+                this.getMovies();
+            }
+            render() {
+                const {isLoading} = this.state;
+                return <div> {isLoading ? 'Loading...' : 'We are ready'}</div>
+            }
+        }
+        export default App;
+        ```
+        > 위의 코드와 동일하게 동작하지만 조금 더 바람직한 코드라고 한다.
+
+    4. movies state에 영화 데이터 저장하기
+
+        ```js
+        import React from 'react';
+        import axios from 'axios';
+
+        class App extends React.Component {
+            state = {
+                isLoading: true,
+                movies : [],
+            };
+            getMovies = async () => {  
+                const {
+                    data : {
+                        data : {movies},
+                    },
+                } = await axios.get('https://yts-proxy.now.sh/list_movies.json');
+                this.setState({movies:movies});      //앞 부분 movies는 state를 의미하고 뒤 부분의 movies는 구조 분해 할당으로 얻은 영화 데이터가 있는 변수를 의미함.
+            };
+            componentDidMount(){
+                this.getMovies();
+            }
+            render() {
+                const {isLoading} = this.state;
+                return <div> {isLoading ? 'Loading...' : 'We are ready'}</div>
+            }
+        }
+        export default App;
+        ```
+        > this.setState({movies})로 축약하여 나타낼 수 있음.
+
+    5. 영화 앱 화면을 Loading... 에서 We are ready로 출력되게 isLoading state값을 true 에서 false로 바꾸기
+        ```js
+        import React from 'react';
+        import axios from 'axios';
+
+        class App extends React.Component {
+            state = {
+                isLoading: true,
+                movies : [],
+            };
+            getMovies = async () => {  
+                const {
+                    data : {
+                        data : {movies},
+                    },
+                } = await axios.get('https://yts-proxy.now.sh/list_movies.json');
+                this.setState({movies, isLoading: false});
+            };
+            componentDidMount(){
+                this.getMovies();
+            }
+            render() {
+                const {isLoading} = this.state;
+                return <div> {isLoading ? 'Loading...' : 'We are ready'}</div>
+            }
+        }
+        export default App;
+        ```
+3. Movie 컴포넌트 만들기
+
+    1. Movie 컴포넌트 만들기
+        > src  폴더에 Movie.js 파일을 새로 만들어 보자
+        
+        > 노마드 코더 영화 API가 보내 준 영화 데이터 중 필요한 것들만 골라서 영화 앱에 반영할 예정 (id, title, rating)
+
+        ```js
+        import React from 'react';
+        import PropTypes from 'prop-tyeps';
+
+        function Movie(){
+            return <h1></h1>
+        }
+
+        Movie.propTypes = {
+            id: PropTypes.nimber.isRequired,
+            year: PropTypes.string.isRequired,
+            title: PropTypes.string.isRequired,
+            summary: PropTypes.string.isRequired,
+            poster: PropTypes.string.isRequired,
+        };
+
+        export default Movie;
+        ```
+    2. 노마드 코더 영화 API 정렬 기능 사용해 보기
+        ![Alt text](./Image/Ch06_sort_example.png)
+
+        > 위의 사진에서 보이는 것과 같이 특정 기준을 통해 정렬을 할 수 있다.
+
+        > rating을 기준으로 한번 정렬을 해보도록 하자!
+
+        ```js
+        import React from 'react';
+        import axios from 'axios';
+
+        class App extends React.Component {
+            state = {
+                isLoading: true,
+                movies : [],
+            };
+            getMovies = async () => {  
+                const {
+                    data : {
+                        data : {movies},
+                    },
+                } = await axios.get('https://yts-proxy.now.sh/list_movies.json?sort_by=rating');  //sort_by=rating 레이팅을 기준으로 정렬
+                this.setState({movies, isLoading: false});
+            };
+            componentDidMount(){
+                this.getMovies();
+            }
+            render() {
+                const {isLoading} = this.state;
+                return <div> {isLoading ? 'Loading...' : 'We are ready'}</div>
+            }
+        }
+        export default App;
+        ```    
+    3. Movie 컴포넌트에 props 추가하고 출력해보기
+        ```js
+        import React from 'react';
+        import PropTypes from 'prop-tyeps';
+
+        function Movie({id, title, year,  summary, poster}){
+            return <h1>{title}</h1>
+        }
+
+        Movie.propTypes = {
+            id: PropTypes.nimber.isRequired,
+            year: PropTypes.string.isRequired,
+            title: PropTypes.string.isRequired,
+            summary: PropTypes.string.isRequired,
+            poster: PropTypes.string.isRequired,
+        };
+
+        export default Movie;
+        ```
+
+    4. App 컴포넌트에서 Movie 컴포넌트 그리기
+        ```js
+        import React from 'react';
+        import axios from 'axios';
+        import Movie from './Movie';       //Movie 컴포넌트 임포트
+
+        class App extends React.Component {
+            state = {
+                isLoading: true,
+                movies : [],
+            };
+            getMovies = async () => {  
+                const {
+                    data : {
+                        data : {movies},
+                    },
+                } = await axios.get('https://yts-proxy.now.sh/list_movies.json?sort_by=rating');  
+                this.setState({movies, isLoading: false});
+            };
+            componentDidMount(){
+                this.getMovies();
+            }
+            render() {
+                const {isLoading, movies} = this.state;
+                return 
+                    <div> 
+                        {isLoading 
+                            ? 'Loading...' 
+                            : movies.map((movie) => {  //movies는 배열이고, 배열의 원소 1개가 movie로 넘어옴
+                                console.log(movie);
+                                return(
+                                     <Movie //여기서는 Movie 컴포넌트 출력 
+                                        id={movie.id}
+                                        year={movie.yewar}
+                                        title={movie.title}
+                                        summary={movie.summary}
+                                        poster={movie.medium_cover_image}
+                                    />;     
+                                );
+                            })}
+                    </div>
+                );
+            }
+        }
+        export default App;
+        ```          
+        ![Alt text](./Image/Ch06_movie_names.png)
+
+        > 영화 정보가 모두 평점 순으로 출력되고 있다!
+
+    5. key props 추가하기
+
+        > **주의!**   
+          **(1) key props는 유일해야 한다.**   
+          **(2) 컴포넌트를 여러개 출력할 때는 유일한 값을 이용하여 key props를 추가 해야함.**
+    
+        ```js
+        import React from 'react';
+        import axios from 'axios';
+        import Movie from './Movie';       //Movie 컴포넌트 임포트
+
+        class App extends React.Component {
+            state = {
+                isLoading: true,
+                movies : [],
+            };
+            getMovies = async () => {  
+                const {
+                    data : {
+                        data : {movies},
+                    },
+                } = await axios.get('https://yts-proxy.now.sh/list_movies.json?sort_by=rating');  
+                this.setState({movies, isLoading: false});
+            };
+            componentDidMount(){
+                this.getMovies();
+            }
+            render() {
+                const {isLoading, movies} = this.state;
+                return 
+                    <div> 
+                        {isLoading 
+                            ? 'Loading...' 
+                            : movies.map((movie) => {  
+                                return(
+                                     <Movie 
+                                        key={movie.id}                   //여기에 key props를 추가하면 됨.
+                                        id={movie.id}
+                                        year={movie.yewar}
+                                        title={movie.title}
+                                        summary={movie.summary}
+                                        poster={movie.medium_cover_image}
+                                    />;     
+                                );
+                            })}
+                    </div>
+                );
+            }
+        }
+        export default App;
+        ```    
+
+4. 영화 앱 스타일링 하기 - 기초
+
+    1. App 컴포넌트에 HTML 추가하기
+
+        ```js
+        import React from 'react';
+        import axios from 'axios';
+        import Movie from './Movie';       //Movie 컴포넌트 임포트
+
+        class App extends React.Component {
+            state = {
+                isLoading: true,
+                movies : [],
+            };
+            getMovies = async () => {  
+                const {
+                    data : {
+                        data : {movies},
+                    },
+                } = await axios.get('https://yts-proxy.now.sh/list_movies.json?sort_by=rating');  
+                this.setState({movies, isLoading: false});
+            };
+            componentDidMount(){
+                this.getMovies();
+            }
+            render() {
+                const {isLoading, movies} = this.state;
+                return 
+                    <section class = "container"> 
+                        {isLoading ? (
+                            <div class = "loader">
+                                <span class = "loader__text">Loading...</span>
+                            </div>
+                        ) : (
+                            <div class = "movies">
+                                {movies.map((movie) => {  
+                                     <Movie 
+                                        key={movie.id}                   //여기에 key props를 추가하면 됨.
+                                        id={movie.id}
+                                        year={movie.yewar}
+                                        title={movie.title}
+                                        summary={movie.summary}
+                                        poster={movie.medium_cover_image}
+                                    />;     
+                                ))}
+                            </div>
+                        )}
+                    </section>
+                );
+            }
+        }
+        export default App;
+        ```    
+    
+    2. Movie 컴포넌트에 HTML 추가하기
+        ```js
+        import React from 'react';
+        import PropTypes from 'prop-tyeps';
+
+        function Movie({id, title, year,  summary, poster}){
+            return (
+                <div class = "movie__data">
+                    <h3 class = "movie__title">{title}</h3>
+                    <h5 class = "movie__year">{year}</h5>
+                    <p class = "movie__summary">{summary}</p>
+                </div>
+            );
+        }
+
+        Movie.propTypes = {
+            id: PropTypes.nimber.isRequired,
+            year: PropTypes.string.isRequired,
+            title: PropTypes.string.isRequired,
+            summary: PropTypes.string.isRequired,
+            poster: PropTypes.string.isRequired,
+        };
+
+        export default Movie;
+        ```
+        > 실행결과 title, year, summary 정보가 다른 스타일로 출력됨.
+
+    3. 영화 포스터 이미지 추가하기
+        > poster props를 추가하여 영화 포스터 이미지를 추가해 보자
+
+        ```js
+        import React from 'react';
+        import PropTypes from 'prop-tyeps';
+
+        function Movie({id, title, year,  summary, poster}){
+            return (
+                <div class = "movie">
+                    <img src ={poster} alt={title} title={title}>
+                    <div class = "movie__data">
+                        <h3 class = "movie__title">{title}</h3>
+                        <h5 class = "movie__year">{year}</h5>
+                        <p class = "movie__summary">{summary}</p>
+                    </div>
+                </div>
+            );
+        }
+
+        Movie.propTypes = {
+            id: PropTypes.nimber.isRequired,
+            year: PropTypes.string.isRequired,
+            summary: PropTypes.string.isRequired,
+            title: PropTypes.string.isRequired,
+            poster: PropTypes.string.isRequired,
+        };
+
+        export default Movie;
+        ```
+
+        ![Alt text](./Image/Ch06_poster.png)
+
+    4. Movie 컴포너트 정리하기 및 style 속성으로 title 스타일링하기
+
+        ```js
+        import React from 'react';
+        import PropTypes from 'prop-tyeps';
+
+        function Movie({title, year,  summary, poster}){
+            return (
+                <div class = "movie">
+                    <img src ={poster} alt={title} title={title}>
+                    <div class = "movie__data">
+                        <h3 class = "movie__title" style={{backgroundColor:'red'}}>
+                            {title}
+                        </h3>
+                        <h5 class = "movie__year">{year}</h5>
+                        <p class = "movie__summary">{summary}</p>
+                    </div>
+                </div>
+            );
+        }
+
+        Movie.propTypes = {
+            year: PropTypes.string.isRequired,
+            title: PropTypes.string.isRequired,
+            summary:PropTypes.string.isRequried,
+            poster: PropTypes.string.isRequired,
+        };
+
+        export default Movie;
+        ```
+
+        ![Alt text](./Image/Ch06_title_backgroundColor_red.png)
+
+    5. CSS 파일 생성하기
+
+        > src 폴더에 Movie.css, App.css 파일을 만들고 App, Movie 컴포넌트에 CSS 파일 임포트하기
+        
+        > ./src/App.js
+        ```js
+        import React from 'react';
+        import axios from 'axios';
+        import Movie from './Movie';
+        import './App.css';
+
+        class App extends React.Component{
+            (생략...)
+        }
+
+        export default App;
+        ```
+
+        > ./src/Movie.js
+        ```js
+        import React from 'react';
+        import PropTypes from 'prop-types';
+        import './Movie.css';
+
+        function Movie({title, year,summary,poster}){
+            return (
+                <div class = "movie">
+                    <img src ={poster} alt={title} title={title} />
+                    <div class="movie__data">
+                        <h3 class="movie__title">
+                            {title}
+                        </h3>
+                        <h5 class="movie__year">{year}</h5>
+                        <p class="movie__summary">{summary}</p>
+                    </div>
+                </div>
+            );
+        }
+        Movie.propTypes = {
+            (생략...)
+        };
+
+        export default Movie;
+        ```
+
+        > ./src/App.css
+
+        ```css
+        body {
+            backgournd-color: #2f2f2f;
+        }
+        ```
+
+        ![Alt text](./Image/Ch06_background-color.png)
+
 
         
