@@ -38,6 +38,11 @@
     * 06-2 영화 데이터 화면에 그리기
     * 06-3 Movie 컴포넌트 만들기
     * 06-4 영화 앱 스타일링 하기 - 기초
+
+* [Ch_07 - 영화 앱 다듬기](#Ch_06)
+    * 07-1 영화 앱 전체 모습 수정하기
+    * 07-2 영화 앱 멋지게 스타일링하기
+    
 ---
 <a id = "Ch_01"></a>
 
@@ -2057,5 +2062,290 @@
 
         ![Alt text](./Image/Ch06_background-color.png)
 
+---
+
+<a id = "Ch_07"></a>
+
+## **Ch_07 - 영화 앱 다듬기**
+
+1. 영화 앱 전체 모습 수정하기
+
+    1. Movie 컴포넌트에 genres props 넘겨주기
+        > 이번에 만들 앱에는 **영화 포스터 이미지**, **제목**, **개봉 연도**, **장르**, **등급**, **시놉시스**가 포함 된다.   
+          따라서 Movie 컴포넌트에 genres props를 넘겨보자!
+        
+        ```js
+        import React from 'react';
+        import PropTypes from 'prop-types';
+        import './Movie.css';
+
+        function Movie({title, year, summary, poster, genres}){      //genres props를 추가
+            return (
+                <div class = "movie">
+                    <img src={poster} alt={title} title={title} />
+                    <div class = "movie__data">
+                        <h3 class = "movie__title">{title}</h3>
+                        <h5 class = " movie__year">{year}</h5>
+                        <p class = "movie__summary">{summary}</p>
+                </div>
+            </div>
+            );
+        }
+
+        Movie.propTypes = {
+            year: PropTypes.number.isRequired,
+            title: PropTypes.string.isRequired,
+            summary: PropTypes.string.isRequired,
+            poster: PropTypes.string.isRequired,
+            genres: PropTypes.arrayOf(PropTypes.string).isRequired,
+        };
+
+        export default Movie;      //genres의 prop-type을 추가
+        ```
+
+        ![Alt text](./Image/Ch07_console_error.png)
+
+        > 첫번째 경고
+        >   > JSX에 사용한 속성 중 class 속성이 className으로 사용되어야 한다!
+        >
+        > 두번째 경고
+        >   > genres props가 필수 (required)인데 Movie 컴포넌트에 undefined로 넘어왔다!
+
+    2. App 컴포넌트 수정하기
+        
+        ```js
+        import React from 'react';
+        import axios from 'axios';
+        import Movie from './Movie';
+        import './App.css';
+        class App extends React.Component{
+            state = {
+                isLoading: true,
+                movies: [],
+            };
+        getMovies = async() => {   
+            const{
+                data: {
+                    data: {movies},
+                },
+                    } = await axios.get('https://yts-proxy.now.sh/list_movies.json?sort_by=rating');
+            this.setState({movies, isLoading: false});
+        };
+
+        componentDidMount(){                       
+            this.getMovies();
+        }
+        render(){
+            const {isLoading, movies} = this.state;        
+                return (
+                    <section class = "container">
+                        { isLoading ? (
+                            <div class = "loader">
+                                <span class = "loader__text">Loading...</span>
+                            </div>
+                        ) : (
+                            <div class = "movies">
+                                {movies.map((movie) => (
+                                    <Movie 
+                                        key={movie.id}
+                                        id={movie.id}
+                                        year={movie.year}
+                                        title={movie.title}
+                                        summary={movie.summary}
+                                        poster={movie.medium_cover_image}
+                                        genres={movie.genres}
+                                    />
+                                ))}
+                            </div>
+                            )}
+                    </section>
+                );    
+            }
+        }                        
+        export default App;
+        ```
+        > 위의 코드 처럼 바꾸어 주면 genre props가 undefined라고 하는 경고 메세지는 사라짐!
+
+    3. class 속성 이름 className으로 바꾸기
+        > 앞에서 작성한 모든 코드에 있는 JSX의 class 속성 이름을 className으로 바꾸기 (App.js, Movie.js)
+
+        ```js
+        import React from 'react';
+        import axios from 'axios';
+        import Movie from './Movie';
+        import './App.css';
+        class App extends React.Component{
+            state = {
+                isLoading: true,
+                movies: [],
+            };
+        getMovies = async() => {   
+            const{
+                data: {
+                    data: {movies},
+                },
+                    } = await axios.get('https://yts-proxy.now.sh/list_movies.json?sort_by=rating');
+            this.setState({movies, isLoading: false});
+        };
+
+        componentDidMount(){                       
+            this.getMovies();
+        }
+        render(){
+            const {isLoading, movies} = this.state;        
+                return (
+                    <section className = "container">
+                        { isLoading ? (
+                            <div className = "loader">
+                                <span className = "loader__text">Loading...</span>
+                            </div>
+                        ) : (
+                            <div className = "movies">
+                                {movies.map((movie) => (
+                                    <Movie 
+                                        key={movie.id}
+                                        id={movie.id}
+                                        year={movie.year}
+                                        title={movie.title}
+                                        summary={movie.summary}
+                                        poster={movie.medium_cover_image}
+                                        genres={movie.genres}
+                                    />
+                                ))}
+                            </div>
+                            )}
+                    </section>
+                );    
+            }
+        }                        
+        export default App;    
+        ```
+
+        ```js
+        import React from 'react';
+        import PropTypes from 'prop-types';
+        import './Movie.css';
+
+        function Movie({title, year, summary, poster, genres}){      
+            return (
+                <div className = "movie">
+                    <img src={poster} alt={title} title={title} />
+                    <div className = "movie__data">
+                        <h3 className = "movie__title">{title}</h3>
+                        <h5 className = " movie__year">{year}</h5>
+                        <p className = "movie__summary">{summary}</p>
+                </div>
+            </div>
+            );
+        }
+
+        Movie.propTypes = {
+            year: PropTypes.number.isRequired,
+            title: PropTypes.string.isRequired,
+            summary: PropTypes.string.isRequired,
+            poster: PropTypes.string.isRequired,
+            genres: PropTypes.arrayOf(PropTypes.string).isRequired,
+        };
+
+        export default Movie;      
+        ```
+
+        > 코드가 오류가 났던 경우
+        >   > HTML의 label 엘리먼트에는 for라는 속성을 추가할 수 있는데 이 속성 이름 역시 자바스크립트의 for문 이름과 겹친다.    
+        따라서 JSX에는 ```<lable for ="name">```이 아니라 ```<lable htmlFor="name">```와 같이 작성해야 한다. 
+    
+    4. 영화 장르 출력하기 
+        > genres props가 배열이므로 map() 함수를 사용   
+          genres props를 ul li 엘리먼트로 감싸 출력해보자!
+
+        ```js
+        import React from 'react';
+        import PropTypes from 'prop-types';
+        import './Movie.css';
+
+        function Movie({title, year, summary, poster, genres}){      
+            return (
+                <div className = "movie">
+                    <img src={poster} alt={title} title={title} />
+                    <div className = "movie__data">
+                        <h3 className = "movie__title">{title}</h3>
+                        <h5 className = " movie__year">{year}</h5>
+                        <ul className="movie__genres">
+                            {genres.map((genre) => {
+                                return <li className="movie__genre">{genre}</li>;
+                            })}
+                        </ul>
+                        <p className = "movie__summary">{summary}</p>
+                </div>
+            </div>
+            );
+        }
+
+        Movie.propTypes = {
+            year: PropTypes.number.isRequired,
+            title: PropTypes.string.isRequired,
+            summary: PropTypes.string.isRequired,
+            poster: PropTypes.string.isRequired,
+            genres: PropTypes.arrayOf(PropTypes.string).isRequired,
+        };
+
+        export default Movie;      
+        ```     
+    
+        ![Alt text](./Image/Ch07_genres.png)
+
+        ![Alt text](./Image/Ch07_li_key_props.png)
+        > **장르를 출력할 때 사용한 li 엘리먼트에 key props를 추가하지 않아서 발생한 문제**    
+        (앞에서 많이 보았던 오류이다!)
+        
+        > 그러나! 차이점이 있다!   
+          장르는 API에서 id와 같은 값을 매겨주지 않았다.   
+          따라서 li 엘리먼트에 제공할 마땅한 key가 없다. 
+          그러므로 map() 함수에 전달할 함수에 두 번째 인자를 전달하면 된다. 
+        >   > map() 함수에 전달할 함수의 2번째 인자에는 map()함수가 반복 실행하며 반환할 배열 원소의 인덱스가 자동으로 들어옴.
+              이 값을 이용하면 key props를 손쉽게 추가할 수 있다.   
+              ~~매우 어렵다 js를 배워본적이 없어서..~~
+
+        ![Alt text](./Image/Ch07_genres.map().png)
+
+        ```js
+        import React from 'react';
+        import PropTypes from 'prop-types';
+        import './Movie.css';
+
+        function Movie({title, year, summary, poster, genres}){      
+            return (
+                <div className = "movie">
+                    <img src={poster} alt={title} title={title} />
+                    <div className = "movie__data">
+                        <h3 className = "movie__title">{title}</h3>
+                        <h5 className = " movie__year">{year}</h5>
+                        <ul className="movie__genres">
+                            {genres.map((genre, index) => {            //이 부분을 추가
+                                return <li key={index} className="movie__genre">{genre}</li>; //여기도 수정
+                            })}
+                        </ul>
+                        <p className = "movie__summary">{summary}</p>
+                </div>
+            </div>
+            );
+        }
+
+        Movie.propTypes = {
+            year: PropTypes.number.isRequired,
+            title: PropTypes.string.isRequired,
+            summary: PropTypes.string.isRequired,
+            poster: PropTypes.string.isRequired,
+            genres: PropTypes.arrayOf(PropTypes.string).isRequired,
+        };
+
+        export default Movie;      
+        ```     
+
+        > 이제 아무런 오류가 발생하지 않는다!
+
+2. 영화 앱 멋지게 스타일링하기
+
+    1. App.css 파일 수정하기
 
         
