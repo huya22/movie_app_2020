@@ -2348,4 +2348,106 @@
 
     1. App.css 파일 수정하기
 
+        ```js
+        * {
+            box-sizing: border-box;
+        }
+
+        body{
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: #eff3f7;
+            height: 100%;
+        }
+        ```     
+        > 위 코드의 결과는 배경 색이 바뀌는 것이다.   
+          ~~회색으로 바뀐다고 바뀌었는데 별로 차이가 안나네;; 따라서 다른 색으로도 변경해보니 변하는게 맞다~~
+
+    2. Movie.css 파일 수정하기
+
+        ```js
+        .movies .movie{
+            background-color: white;
+            margin-bottom: 70px;
+            font-weight: 300;
+            padding: 20px;
+            border-radius: 5px;
+            color: #adaeb9;
+            box-shadow: 0 13px 27px -5px rgba(50, 50, 93, 0.25), 
+                        0 8px 16px -8px rgba(0, 0, 0, 0.3), 
+                        0 -6px 16px -6px rgba(0, 0, 0, 0.025);
+        }
+        .movies ,.movie a{
+            display: grid;
+            grid-template-columns: minmax(150px, 1fr) 2fr;
+            grid-gap: 20px;
+            text-decoration: none;
+            color: inherit;
+        }
+        .movie img{
+            position: relative;
+            top: -50px;
+            max-width: 150px;
+            width: 100%;
+            margin-right: 30px;
+            box-shadow: 0 30px 60px -12px rgba(50, 50, 93, 0.25),
+                        0 18px 36px -18px rgba(0, 0, 0, 0.3),
+                        0 -12px 36px -8px rgba(0, 0, 0, 0.025);
+        }
+        .movie .movie__title{
+            margin-bottom: 5px;
+            font-size: 24px;
+            color: #2c2c2c;
+        }
+        .movie .movie__genres{
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+            margin: 5px 0px;
+        }
+        .movie__genres li,
+        .movie .movie__year{
+            margin-right: 10px;
+            font-size: 14px;
+        }
+        ```
+        ![Alt text](./Image/Ch07_App_css_Movie_css.png)
+        > 영화 정보가 카드 모양으로 출력됨  
+        >   > 카드는 브라우저 폭에 따라 크기가 조절 됨.
+
+    3. 영화 카드 안에 있는 시놉시스를 180자로 제한 하고자 할 때
+        > 시놉시스는 summary props에 저장되어 있는 문자열을 출력한 것이다!   
+        >   > **자바스크립트의 slice()함수를 사용하자!**
+        >   >   > **사용법** 
+        >   >   >   > **slice(시작, 끝)**
+
+        ```js
+        <p className = "movie__summary">{summary.slice(0,180)}...</p>
+        ```
+        * slice 사용법이다.
+
+        ![Alt text](./Image/Ch07_slice().png)
+        > 180자가 넘어가면 ...이 출력되고 있다.
+
+    4. 영화 앱 제목 바꾸기
+        > 현재 영화 앱은 React App이라고 설정 되어 있다 
+        >   > 이는 public 폴더의 index.html 파일을 열어 title 엘리먼트 사이에 원하는 제목을 넣으면 바꿀 수 있다.    
+        >   > title 엘리먼트는 head 엘리먼트 안에 있다. 
+        
+        ```js
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            (생략...)
+            <title>Movie App</title>  //여기를 이렇게 수정해주면 된다. 
+        </head>
+        <body>
+            (생략...)
+        </body>
+        </html>
+        ```
+        ![Alt text](./Image/Ch07_Movie_App_Name.png)
         
