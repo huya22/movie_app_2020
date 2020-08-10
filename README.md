@@ -2982,7 +2982,7 @@
         class Detail extends React.Component {
             componentDidlMount(){                             //Detail 컴포넌트가 마운트 되면
             const { location, history} = this.props;      //구조 분해 할당으로 location, history를 얻고  
-                if(location.state == undefined){             //location.state가 없는 경우
+                if(location.state === undefined){             //location.state가 없는 경우
                     history.push('/');                       //Home으로 이동시킨다.
                 }
             }
@@ -2998,6 +2998,6 @@
 
     4. 리다이렉트 기능 확인해 보기
 
-        
+
 
 
