@@ -2456,7 +2456,6 @@
         </html>
         ```
         ![Alt text](./Image/Ch07_Movie_App_Name.png)
-
 ---
     
 <a id = "Ch_08"></a>
@@ -2998,6 +2997,76 @@
 
     4. 리다이렉트 기능 확인해 보기
 
+        > localhost:3000/#/movie-detail로 이동해보면 자동으로 Home으로 돌아오도록 설정 되었다.
 
+    5. 영화 제목 출력하기
+
+        > location.state가 있는지 확인하고 있으면 title을 출력하고 아니면 null을 출력하도록 하자
+
+6. 영화 앱 깃허브에 배포하기
+
+    1. package.json 파일 수정하기
+
+        ```js
+            (생략...)    
+            ]
+        },
+        "hompage": "https://huya22.github.io/movie_app_2020"
+        }
+        ```
+
+
+    2. package.json 파일을 열어 scripts 키값으로 명령어 추가하기
+
+        ```js
+        (생략...)    
+            "scripts":{
+                "start": "react-scripts start",
+                "build": "react-scripts build",
+                "predeploy": "npm run build",
+                "deploy": "gh-pages -d build"
+            },
+            (생략...)
+        }
+        ```
+    
+    3. 최종 깃허브에 업로드하기
+
+    4. gh-pages 설치하기
+
+        > 최종 완성 코드를 깃허브에 업로드 하고 배포 서비스를 이용하여 다른 사람들이 영화 앱을 사용할 수 있도록 하기 위해서 루트 폴더에 gh-pages를 설치해야 한다.
+
+        ```
+        > npm install gh-pages
+        ```
+
+    5. 깃허브 저장소 다시 확인하기
+
+        ```
+        > git remote -v
+        origin	https://github.com/huya22/movie_app_2020.git (fetch)
+        origin	https://github.com/huya22/movie_app_2020.git (push)
+        ```
+
+        > git remote -v 는 업로드한 깃허브 저장소의 주소를 확인할 수 있는 것이다.   
+          이 이름들이 깃허브에 배포한 영화 앱 주소에 사용될 것이다.
+
+    6. 영화 앱 깃허브에 배포하기
+
+        ```
+        > npm run deploy
+        ```
+
+        > 이후에 다시 npm start로 실행을 하고 난 뒤 확인을 해보면
+
+    7. Github Pages에 접속하여 영화 앱 확인하기
+
+        > https://huya22.github.io/movie_app_2020
+
+        ![Alt text](./Image/Ch08_complete_page.png)
+
+        > 이 처럼 완성된 화면을 확인 할 수 있다!!!
+
+---
 
 
