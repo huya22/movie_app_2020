@@ -2894,7 +2894,7 @@
         export default Movie;
         ```
 
-        ![Alt text](./Image/CH08_movie_detail.png)
+        ![Alt text](./Image/Ch08_movie_detail.png)
 
     5. Deatil 컴포넌트 만들기
         
