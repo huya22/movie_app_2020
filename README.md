@@ -2456,6 +2456,7 @@
         </html>
         ```
         ![Alt text](./Image/Ch07_Movie_App_Name.png)
+<<<<<<< HEAD
 
 ---
     
@@ -3001,3 +3002,6 @@
 
 
 
+=======
+        
+>>>>>>> 30fa474aefebf9c1982d1ceafec97fee714dc30b
